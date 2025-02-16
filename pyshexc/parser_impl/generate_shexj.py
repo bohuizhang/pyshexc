@@ -30,7 +30,12 @@ class ParseErrorListener(ErrorListener):
 
     def syntaxError(self, recognizer, offending_symbol, line, column, msg, e):
         self.n_errors += 1
-        self.errors.append("line " + str(line) + ":" + str(column) + " " + msg)
+        self.errors.append({
+            "line": line,
+            "column": column,
+            "msg": msg,
+            "value": "line " + str(line) + ":" + str(column) + " " + msg
+        })
 
 
 def load_shex_file(shexfilename: str) -> str:
@@ -84,7 +89,7 @@ def do_parse(infilename: str, jsonfilename: Optional[str], rdffilename: Optional
     return False
 
 
-def parse(input_: Union[str, InputStream], default_base: Optional[str]=None) -> Optional[Schema]:
+def parse(input_: Union[str, InputStream], default_base: Optional[str]=None) -> Schema | list[dict]:
     """
     Parse the text in infile and return the resulting schema
     :param input_: text or input stream to parse
@@ -100,8 +105,8 @@ def parse(input_: Union[str, InputStream], default_base: Optional[str]=None) -> 
     lexer.addErrorListener(error_listener)
     tokens = CommonTokenStream(lexer)
     tokens.fill()
-    if error_listener.n_errors:         # Lexer prints errors directly
-        return None
+    if error_listener.n_errors:       # Lexer prints errors directly
+        return error_listener.errors  # return error message
 
     # Step 2: Generate the parse tree
     parser = ShExDocParser(tokens)
@@ -109,9 +114,9 @@ def parse(input_: Union[str, InputStream], default_base: Optional[str]=None) -> 
     parse_tree = parser.shExDoc()
     if error_listener.n_errors:
         print('\n'.join(error_listener.errors), file=sys.stderr)
-        return None
+        return error_listener.errors  # return error message
 
-    # Step 3: Transform the results the results
+    # Step 3: Transform the results
     parser = ShexDocParser(default_base=default_base)
     parser.visit(parse_tree)
 
