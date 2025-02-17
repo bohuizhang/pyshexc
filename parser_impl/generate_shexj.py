@@ -113,7 +113,7 @@ def parse(input_: Union[str, InputStream], default_base: Optional[str]=None) -> 
     parser.addErrorListener(error_listener)
     parse_tree = parser.shExDoc()
     if error_listener.n_errors:
-        print('\n'.join(error_listener.errors), file=sys.stderr)
+        print('\n'.join([error["value"] for error in error_listener.errors]), file=sys.stderr)
         return error_listener.errors  # return error message
 
     # Step 3: Transform the results
