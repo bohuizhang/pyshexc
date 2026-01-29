@@ -2,7 +2,7 @@ import codecs
 import os
 import sys
 from argparse import ArgumentParser
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Dict
 from urllib import request
 from urllib.parse import urlparse
 
@@ -89,7 +89,7 @@ def do_parse(infilename: str, jsonfilename: Optional[str], rdffilename: Optional
     return False
 
 
-def parse(input_: Union[str, InputStream], default_base: Optional[str]=None) -> Schema | List[dict]:
+def parse(input_: Union[str, InputStream], default_base: Optional[str]=None) -> Schema | List[Dict]:
     """
     Parse the text in infile and return the resulting schema
     :param input_: text or input stream to parse
