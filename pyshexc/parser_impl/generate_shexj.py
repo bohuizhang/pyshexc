@@ -89,7 +89,7 @@ def do_parse(infilename: str, jsonfilename: Optional[str], rdffilename: Optional
     return False
 
 
-def parse(input_: Union[str, InputStream], default_base: Optional[str]=None) -> Schema | list[dict]:
+def parse(input_: Union[str, InputStream], default_base: Optional[str]=None) -> Schema | List[dict]:
     """
     Parse the text in infile and return the resulting schema
     :param input_: text or input stream to parse
